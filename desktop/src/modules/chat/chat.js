@@ -77,7 +77,22 @@ export function initChat(chatContainerId, messageInputId, sendMessageButtonId, n
 export function renderChatHistory(chatId) {
     chatContainer.innerHTML = ''; // Clear current messages
     const history = getChatHistory(chatId);
-    history.forEach(msg => displayMessage(msg));
+    
+    // Show welcome message only if chat is empty
+    if (history.length === 0) {
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'welcome-message';
+        welcomeDiv.innerHTML = `
+            <h1>Привет! Я — AI-консультант по корпоративной документации от команды "Плюс вайб".</h1>
+            <p>Я помогу тебе мгновенно найти нужную информацию из загруженных документов.</p>
+            <p>Сначала тебе необходимо загрузить всё, что будет использоваться для консультаций.</p>
+            <p>А дальше просто задавай вопросы!</p>
+        `;
+        chatContainer.appendChild(welcomeDiv);
+    } else {
+        history.forEach(msg => displayMessage(msg));
+    }
+    
     scrollToBottom();
     highlightActiveChatInList(chatId);
 }
@@ -108,15 +123,14 @@ function displayMessage(message) {
         const sourcesElement = document.createElement('div');
         sourcesElement.classList.add('message-sources');
         const sourceTitle = document.createElement('strong');
-        sourceTitle.textContent = 'Sources:';
+        sourceTitle.textContent = 'Источники:';
         sourcesElement.appendChild(sourceTitle);
 
         message.sources.forEach(source => {
             const sourceItem = document.createElement('div');
             sourceItem.classList.add('source-item');
             sourceItem.innerHTML = `
-                <span>${source.document_name} (Chunk ${source.chunk_id})</span>
-                <p>"${source.text_preview}..."</p>
+                <span>${source.document_name} (Чанк ${source.chunk_id})</span>
             `;
             sourcesElement.appendChild(sourceItem);
         });
@@ -137,7 +151,7 @@ async function handleSendMessage() {
 
     const activeChatId = getActiveChatId();
     if (!activeChatId) {
-        alert('Please create or select a chat session.');
+        alert('Пожалуйста, создайте или выберите чат-сессию.');
         return;
     }
 
@@ -151,7 +165,10 @@ async function handleSendMessage() {
     // Display a "typing" or "thinking" indicator
     const typingIndicator = document.createElement('div');
     typingIndicator.classList.add('message', 'assistant', 'thinking');
-    typingIndicator.textContent = 'Assistant is typing...';
+    const typingContent = document.createElement('div');
+    typingContent.classList.add('message-content');
+    typingContent.textContent = 'Ассистент печатает...';
+    typingIndicator.appendChild(typingContent);
     chatContainer.appendChild(typingIndicator);
     scrollToBottom();
 
@@ -181,7 +198,7 @@ async function handleSendMessage() {
         }
         const errorMessage = {
             role: 'system',
-            content: `Error: ${error.message}. Please try again.`,
+            content: `Ошибка: ${error.message}. Пожалуйста, попробуйте снова.`,
             type: 'text'
         };
         addMessageToHistory(activeChatId, errorMessage);
@@ -206,7 +223,7 @@ function updateChatList() {
     chatIds.forEach(chatId => {
         const chatItem = document.createElement('div');
         chatItem.classList.add('chat-item');
-        chatItem.textContent = `Chat Session ${chatIds.indexOf(chatId) + 1}`; // Simple naming
+        chatItem.textContent = `Чат-сессия ${chatIds.indexOf(chatId) + 1}`; // Simple naming
         chatItem.dataset.chatId = chatId;
 
         chatItem.addEventListener('click', () => {

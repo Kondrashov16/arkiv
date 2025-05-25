@@ -52,18 +52,18 @@ async function handleFileSelection(event, statusDisplay) {
 
     const activeChatId = getActiveChatId();
     if (!activeChatId) {
-        alert('Please create or select a chat session before uploading a file.');
+        alert('Пожалуйста, создайте или выберите чат-сессию перед загрузкой файла.');
         statusDisplay.textContent = '';
         return;
     }
 
-    statusDisplay.textContent = `Uploading "${file.name}"...`;
+    statusDisplay.textContent = `Загружается "${file.name}"...`;
     statusDisplay.style.color = 'orange';
 
     // Add a pending message to the chat history
     addMessageToHistory(activeChatId, {
         role: 'system',
-        content: `Initiating upload of "${file.name}"...`,
+        content: `Начинается загрузка "${file.name}"...`,
         type: 'file_upload_status',
         status: 'pending',
         fileName: file.name
@@ -71,14 +71,14 @@ async function handleFileSelection(event, statusDisplay) {
 
     try {
         const response = await uploadFile(file);
-        statusDisplay.textContent = `"${file.name}" uploaded successfully!`;
+        statusDisplay.textContent = `"${file.name}" успешно загружен!`;
         statusDisplay.style.color = 'green';
         console.log('Upload successful:', response);
 
         // Update chat history with success message
         addMessageToHistory(activeChatId, {
             role: 'system',
-            content: `"${file.name}" uploaded successfully! Document processed.`,
+            content: `"${file.name}" успешно загружен! Документ обработан.`,
             type: 'file_upload_status',
             status: 'success',
             fileName: file.name
@@ -88,14 +88,14 @@ async function handleFileSelection(event, statusDisplay) {
         event.target.value = '';
 
     } catch (error) {
-        statusDisplay.textContent = `Error uploading "${file.name}": ${error.message}`;
+        statusDisplay.textContent = `Ошибка загрузки "${file.name}": ${error.message}`;
         statusDisplay.style.color = 'red';
         console.error('File upload error:', error);
 
         // Update chat history with error message
         addMessageToHistory(activeChatId, {
             role: 'system',
-            content: `Error uploading "${file.name}": ${error.message}`,
+            content: `Ошибка загрузки "${file.name}": ${error.message}`,
             type: 'file_upload_status',
             status: 'error',
             fileName: file.name

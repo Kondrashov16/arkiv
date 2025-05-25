@@ -1,31 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAG Desktop Client</title>
+    <title>AI-консультант</title>
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="app-container">
         <div class="sidebar">
-            <button id="new-chat-button" class="sidebar-button">New Chat</button>
-            <div id="chat-list" class="chat-list">
+            <div class="sidebar-header">
+                <h2>AI-консультант</h2>
+            </div>
+            <button id="new-chat-button" class="new-chat-btn">
+                <span class="plus-icon">+</span>
+                Новый чат
+            </button>
+            <div class="conversations-section">
+                <h3>Ваши чаты</h3>
+                <div id="chat-list" class="chat-list">
                 </div>
+            </div>
             <div class="file-upload-section">
-                <h3>Upload Document</h3>
+                <h3>Загрузить документ</h3>
                 <input type="file" id="file-input" style="display: none;" accept=".pdf,.docx,.md">
-                <button id="upload-button" class="sidebar-button">Select & Upload File</button>
+                <button id="upload-button" class="upload-btn">
+                    Выбрать и загрузить файл
+                </button>
                 <div id="upload-status" class="status-message"></div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">СК</div>
+                    <span class="user-name">Степан Кондрашов</span>
+                </div>
             </div>
         </div>
 
         <div class="main-content">
             <div id="chat-container" class="chat-container">
-                </div>
+            </div>
             <div class="chat-input-area">
-                <textarea id="message-input" placeholder="Type your message..." rows="3"></textarea>
-                <button id="send-message-button">Send</button>
+                <div class="input-container">
+                    <textarea id="message-input" placeholder="Что вы хотите спросить?..." rows="1"></textarea>
+                    <button id="send-message-button" class="send-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
