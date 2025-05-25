@@ -20,6 +20,8 @@ let uploadStatusDisplay; // Reference to the status display from file_upload mod
  * @param {string} uploadStatusDisplayId - ID of the element displaying upload status.
  */
 export function initChat(chatContainerId, messageInputId, sendMessageButtonId, newChatButtonId, chatListContainerId, uploadStatusDisplayId) {
+    console.log("initChat called with IDs:", { chatContainerId, messageInputId, sendMessageButtonId, newChatButtonId, chatListContainerId, uploadStatusDisplayId });
+    
     chatContainer = document.getElementById(chatContainerId);
     messageInput = document.getElementById(messageInputId);
     sendMessageButton = document.getElementById(sendMessageButtonId);
@@ -27,20 +29,35 @@ export function initChat(chatContainerId, messageInputId, sendMessageButtonId, n
     chatListContainer = document.getElementById(chatListContainerId);
     uploadStatusDisplay = document.getElementById(uploadStatusDisplayId);
 
+    console.log("Found elements:", { 
+        chatContainer: !!chatContainer, 
+        messageInput: !!messageInput, 
+        sendMessageButton: !!sendMessageButton, 
+        newChatButton: !!newChatButton, 
+        chatListContainer: !!chatListContainer, 
+        uploadStatusDisplay: !!uploadStatusDisplay 
+    });
+
     if (!chatContainer || !messageInput || !sendMessageButton || !newChatButton || !chatListContainer || !uploadStatusDisplay) {
         console.error('One or more chat UI elements not found. Check IDs.');
         return;
     }
 
-    sendMessageButton.addEventListener('click', handleSendMessage);
+    sendMessageButton.addEventListener('click', () => {
+        console.log("Send button clicked");
+        handleSendMessage();
+    });
+    
     messageInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
+            console.log("Enter key pressed in message input");
             e.preventDefault(); // Prevent new line in input
             handleSendMessage();
         }
     });
 
     newChatButton.addEventListener('click', () => {
+        console.log("New chat button clicked");
         const newChatId = createChatSession();
         setActiveChatId(newChatId);
         renderChatHistory(newChatId);
@@ -114,6 +131,7 @@ function displayMessage(message) {
  * Handles sending a message to the LLM.
  */
 async function handleSendMessage() {
+    console.log("handleSendMessage");
     const queryText = messageInput.value.trim();
     if (!queryText) return;
 

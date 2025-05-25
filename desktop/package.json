@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Desktop client for RAG Service with OpenRouter, built with Electron.",
     "main": "main.js",
+    "type": "module",
     "scripts": {
       "start": "electron .",
       "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,11 +1,15 @@
 // main.js - Electron Main Process
 
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const dotenv = require('dotenv');
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -14,11 +18,12 @@ function createWindow() {
         minWidth: 800,
         minHeight: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'src', 'preload.js'),
             // IMPORTANT: For security, contextIsolation should be true and nodeIntegration false in production.
             // We're keeping nodeIntegration false here as a best practice, using preload for exposure.
             contextIsolation: true,
             nodeIntegration: false,
+            enableRemoteModule: false,
         },
     });
 

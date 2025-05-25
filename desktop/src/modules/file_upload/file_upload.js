@@ -10,18 +10,30 @@ import { getActiveChatId, addMessageToHistory } from '../chat_manager/chat_manag
  * @param {string} statusDisplayId - The ID of the element to display upload status.
  */
 export function initFileUpload(uploadButtonId, fileInputId, statusDisplayId) {
+    console.log("initFileUpload called with IDs:", { uploadButtonId, fileInputId, statusDisplayId });
+    
     const uploadButton = document.getElementById(uploadButtonId);
     const fileInput = document.getElementById(fileInputId);
     const statusDisplay = document.getElementById(statusDisplayId);
 
+    console.log("Found file upload elements:", { 
+        uploadButton: !!uploadButton, 
+        fileInput: !!fileInput, 
+        statusDisplay: !!statusDisplay 
+    });
+
     if (uploadButton && fileInput && statusDisplay) {
         uploadButton.addEventListener('click', () => {
+            console.log("Upload button clicked");
             fileInput.click(); // Programmatically click the hidden file input
         });
 
         fileInput.addEventListener('change', (event) => {
+            console.log("File input changed");
             handleFileSelection(event, statusDisplay);
         });
+        
+        console.log("File upload event listeners added successfully");
     } else {
         console.error('File upload elements not found. Check IDs:', { uploadButtonId, fileInputId, statusDisplayId });
     }
