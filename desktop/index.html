@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Desktop Client</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <button id="new-chat-button" class="sidebar-button">New Chat</button>
+            <div id="chat-list" class="chat-list">
+                </div>
+            <div class="file-upload-section">
+                <h3>Upload Document</h3>
+                <input type="file" id="file-input" style="display: none;" accept=".pdf,.docx,.md">
+                <button id="upload-button" class="sidebar-button">Select & Upload File</button>
+                <div id="upload-status" class="status-message"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="chat-container" class="chat-container">
+                </div>
+            <div class="chat-input-area">
+                <textarea id="message-input" placeholder="Type your message..." rows="3"></textarea>
+                <button id="send-message-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./renderer.js"></script>
+</body>
+</html>
