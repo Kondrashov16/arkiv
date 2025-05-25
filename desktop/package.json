@@ -1,0 +1,20 @@
+{
+    "name": "rag-desktop-client",
+    "version": "1.0.0",
+    "description": "Desktop client for RAG Service with OpenRouter, built with Electron.",
+    "main": "main.js",
+    "type": "module",
+    "scripts": {
+      "start": "electron .",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Your Name",
+    "license": "ISC",
+    "devDependencies": {
+      "electron": "^29.2.0"
+    },
+    "dependencies": {
+      "dotenv": "^16.4.5"
+    }
+  }

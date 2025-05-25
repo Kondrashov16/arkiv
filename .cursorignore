@@ -5,7 +5,17 @@
 *.pyw
 *.pyz
 
-# Backend
+# backend
 backend/__pycache__/
 backend/venv/
 backend/storage/
+
+# desktop (electron)
+desktop/node_modules/
+desktop/dist/
+desktop/build/
+desktop/out/
+desktop/release/
+desktop/app.asar
+desktop/app.asar.unpacked/
+desktop/app.asar.unpacked/
