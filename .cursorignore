@@ -1,0 +1,11 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+
+# Backend
+backend/__pycache__/
+backend/venv/
+backend/storage/
