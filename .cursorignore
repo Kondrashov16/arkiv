@@ -1,5 +1,4 @@
 # Python
-.env
 *.pyc
 *.pyo
 *.pyd
