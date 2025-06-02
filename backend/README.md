@@ -1,140 +1,153 @@
-# RAG Service with OpenRouter
+# Сервис RAG с использованием OpenRouter
 
-This project implements a Retrieval Augmented Generation (RAG) service that allows you to upload documents (PDF, DOCX, MD), process them, store their content in a vector database, and then query a Large Language Model (LLM) via OpenRouter, using the ingested documents as context.
+Этот проект реализует сервис Retrieval Augmented Generation (RAG), который позволяет загружать документы (PDF, DOCX, MD), обрабатывать их, сохранять содержимое в векторной базе данных и затем выполнять запросы к большой языковой модели (LLM) через OpenRouter, используя загруженные документы в качестве контекста.
 
-## Features
+## Возможности
 
--   **File Upload:** Endpoint to upload and process PDF, DOCX, and Markdown files.
--   **Text Extraction & Chunking:** Extracts text from files and splits it into manageable chunks.
--   **Vector Embeddings:** Generates embeddings for text chunks using Sentence Transformers.
--   **Vector Store:** Uses FAISS for efficient similarity search of text chunks.
--   **LLM Integration:** Queries an LLM on OpenRouter, providing relevant context from your documents.
--   **Source Attribution:** Returns the LLM's response along with the specific document chunks used as sources.
--   **Modular Design:** Code is organized into logical modules, each with its own README.
--   **API-driven:** Uses FastAPI to expose endpoints for file upload and querying.
+* **Загрузка файлов:** Эндпоинт для загрузки и обработки файлов PDF, DOCX и Markdown.
+* **Извлечение и разбиение текста:** Извлекает текст из файлов и разбивает его на удобные фрагменты.
+* **Векторные представления:** Генерирует эмбеддинги для фрагментов текста с помощью Sentence Transformers.
+* **Векторное хранилище:** Использует FAISS для эффективного поиска по сходству.
+* **Интеграция с LLM:** Выполняет запрос к LLM через OpenRouter, предоставляя релевантный контекст из документов.
+* **Указание источников:** Возвращает ответ модели вместе с конкретными использованными фрагментами документов.
+* **Модульная архитектура:** Код организован по логическим модулям, каждый со своим README.
+* **API-ориентированность:** Используется FastAPI для предоставления эндпоинтов загрузки и запроса.
 
-## Project Structure
+## Структура проекта
 
-
+```
 rag_service/
-├── main.py                 # FastAPI app initialization and server start
-├── api/                    # Handles API endpoints and schemas
+├── main.py                 # Инициализация FastAPI-приложения и запуск сервера
+├── api/                    # Эндпоинты и схемы API
 │   ├── endpoints.py
 │   ├── schemas.py
 │   └── README.md
-├── file_processing/        # Handles text extraction and chunking
+├── file_processing/        # Извлечение текста и разбиение на фрагменты
 │   ├── extractor.py
 │   ├── chunking.py
 │   └── README.md
-├── vector_store/           # Manages vector embeddings and search
+├── vector_store/           # Управление эмбеддингами и поиском
 │   ├── store.py
 │   └── README.md
-├── llm_interface/          # Interacts with the OpenRouter LLM
+├── llm_interface/          # Взаимодействие с LLM через OpenRouter
 │   ├── openrouter_client.py
 │   └── README.md
-├── core/                   # Core configuration and shared utilities
+├── core/                   # Конфигурация и общие утилиты
 │   ├── config.py
 │   └── README.md
-├── storage/                # Directory for uploaded files (created automatically)
+├── storage/                # Папка для загружаемых файлов (создаётся автоматически)
 │   └── uploads/
-├── .env.example            # Example for environment variables
-├── requirements.txt        # Python dependencies
-└── README.md               # This file
+├── .env.example            # Пример файла переменных окружения
+├── requirements.txt        # Зависимости Python
+└── README.md               # Этот файл
+```
 
+## Установка и настройка
 
-## Setup and Installation
+1. **Клонировать репозиторий (или создать файлы вручную):**
 
-1.  **Clone the repository (or create the files as provided):**
-    ```bash
-    # If you had a git repo:
-    # git clone <repository_url>
-    # cd rag_service
-    ```
+   ```bash
+   # Если используете git:
+   # git clone <repository_url>
+   # cd rag_service
+   ```
 
-2.  **Create and activate a virtual environment:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
+2. **Создать и активировать виртуальное окружение:**
 
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Для Windows: venv\Scripts\activate
+   ```
 
-4.  **Set up environment variables:**
-    Copy `.env.example` to a new file named `.env` and fill in your details:
-    ```
-    OPENROUTER_API_KEY="your_openrouter_api_key_here"
-    # You can find models at [https://openrouter.ai/docs#models](https://openrouter.ai/docs#models)
-    # Example: "mistralai/mistral-7b-instruct" or "openai/gpt-3.5-turbo"
-    OPENROUTER_MODEL_NAME="mistralai/mistral-7b-instruct"
-    EMBEDDING_MODEL_NAME="all-MiniLM-L6-v2"
-    ```
-    Replace `"your_openrouter_api_key_here"` with your actual OpenRouter API key. You can choose any model available on OpenRouter.
+3. **Установить зависимости:**
 
-## Running the Service
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-1.  **Start the FastAPI server:**
-    ```bash
-    uvicorn main:app --reload
-    ```
-    The server will typically start on `http://127.0.0.1:8000`.
+4. **Настроить переменные окружения:**
+   Скопируйте `.env.example` в новый файл `.env` и укажите свои значения:
 
-## API Endpoints
+   ```
+   OPENROUTER_API_KEY="your_openrouter_api_key_here"
+   # Список моделей: https://openrouter.ai/docs#models
+   # Примеры: "mistralai/mistral-7b-instruct" или "openai/gpt-3.5-turbo"
+   OPENROUTER_MODEL_NAME="mistralai/mistral-7b-instruct"
+   EMBEDDING_MODEL_NAME="all-MiniLM-L6-v2"
+   ```
 
-The API documentation (Swagger UI) will be available at `http://127.0.0.1:8000/docs` when the server is running.
+   Замените `"your_openrouter_api_key_here"` на свой реальный ключ API от OpenRouter.
 
-1.  **Upload File:**
-    * **Endpoint:** `POST /upload`
-    * **Request:** `multipart/form-data` with a file.
-    * **Response:** Confirmation message.
-    * **Example using cURL:**
-        ```bash
-        curl -X POST -F "file=@/path/to/your/document.pdf" [http://127.0.0.1:8000/api/v1/upload](http://127.0.0.1:8000/api/v1/upload)
-        ```
+## Запуск сервиса
 
-2.  **Query LLM:**
-    * **Endpoint:** `POST /query`
-    * **Request Body (JSON):**
-        ```json
-        {
-          "query_text": "What is the main topic of the document?"
-        }
-        ```
-    * **Response Body (JSON):**
-        ```json
-        {
-          "llm_response": "The main topic of the document appears to be...",
-          "sources": [
-            {
-              "document_name": "document.pdf",
-              "chunk_id": 0,
-              "text_preview": "This document discusses various aspects of..."
-            },
-            // ... other relevant sources
-          ]
-        }
-        ```
-    * **Example using cURL:**
-        ```bash
-        curl -X POST -H "Content-Type: application/json" \
-             -d '{"query_text": "What are the key findings?"}' \
-             [http://127.0.0.1:8000/api/v1/query](http://127.0.0.1:8000/api/v1/query)
-        ```
+1. **Запустить сервер FastAPI:**
 
-## Modules
+   ```bash
+   uvicorn main:app --reload
+   ```
 
-Each module has its own `README.md` file in its respective directory, detailing its architecture and functionality.
+   По умолчанию сервер запускается по адресу `http://127.0.0.1:8000`.
 
--   `api/README.md`
--   `core/README.md`
--   `file_processing/README.md`
--   `llm_interface/README.md`
--   `vector_store/README.md`
+## API-эндпоинты
 
-## Notes
+Документация API (Swagger UI) доступна по адресу: `http://127.0.0.1:8000/docs`.
 
-* The vector store (FAISS index and document metadata) is currently stored in memory. For persistence across server restarts, you would need to implement saving/loading the FAISS index and the document map to disk.
-* The `storage/uploads` directory is used to temporarily store uploaded files during processing.
-* Ensure your OpenRouter API key has enough credits and the selected model is appropriate for your needs.
+1. **Загрузка файла:**
+
+   * **Эндпоинт:** `POST /upload`
+   * **Формат запроса:** `multipart/form-data` с файлом.
+   * **Ответ:** Сообщение с подтверждением.
+   * **Пример cURL:**
+
+     ```bash
+     curl -X POST -F "file=@/path/to/your/document.pdf" http://127.0.0.1:8000/api/v1/upload
+     ```
+
+2. **Запрос к LLM:**
+
+   * **Эндпоинт:** `POST /query`
+   * **Тело запроса (JSON):**
+
+     ```json
+     {
+       "query_text": "What is the main topic of the document?"
+     }
+     ```
+   * **Ответ (JSON):**
+
+     ```json
+     {
+       "llm_response": "Основная тема документа...",
+       "sources": [
+         {
+           "document_name": "document.pdf",
+           "chunk_id": 0,
+           "text_preview": "Документ описывает различные аспекты..."
+         },
+         // ... другие релевантные фрагменты
+       ]
+     }
+     ```
+   * **Пример cURL:**
+
+     ```bash
+     curl -X POST -H "Content-Type: application/json" \
+          -d '{"query_text": "What are the key findings?"}' \
+          http://127.0.0.1:8000/api/v1/query
+     ```
+
+## Модули
+
+Каждый модуль содержит свой `README.md` в соответствующей папке, описывающий архитектуру и назначение:
+
+* `api/README.md`
+* `core/README.md`
+* `file_processing/README.md`
+* `llm_interface/README.md`
+* `vector_store/README.md`
+
+## Примечания
+
+* Векторное хранилище (FAISS-индекс и метаданные документов) пока хранится в памяти. Для сохранения между перезапусками сервера потребуется реализовать загрузку/сохранение индекса и карты документов на диск.
+* Папка `storage/uploads` используется для временного хранения загруженных файлов.
+* Убедитесь, что у вашего OpenRouter API-ключа достаточно кредитов, и выбранная модель подходит для вашей задачи.

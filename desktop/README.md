@@ -1,113 +1,117 @@
 # RAG Desktop Client
 
-This project implements a desktop client for the RAG (Retrieval Augmented Generation) service, built using the Electron framework. It provides a user-friendly interface for interacting with the backend RAG service, enabling file uploads, managing chat sessions, and engaging in contextual conversations powered by a Large Language Model (LLM) through OpenRouter.
+Этот проект реализует настольный клиент для сервиса RAG (Retrieval Augmented Generation), созданный с использованием фреймворка Electron. Он предоставляет удобный пользовательский интерфейс для взаимодействия с бэкендом RAG, поддерживает загрузку файлов, управление чат-сессиями и проведение контекстных диалогов на базе большой языковой модели (LLM) через OpenRouter.
 
-## Features
+## Возможности
 
--   **File Upload:** Easily upload PDF, DOCX, and Markdown files to the RAG service for processing and ingestion into the vector store.
--   **Multi-Chat Sessions:** Create and manage multiple independent chat sessions, allowing users to switch between different conversations.
--   **Persistent Chat History (within session):** Each chat session maintains its own history, which is sent to the LLM to preserve conversational context.
--   **ChatGPT-like Interface:** A familiar and intuitive user interface for seamless interaction.
--   **Modular Architecture:** The codebase is organized into well-defined modules for maintainability and scalability.
+* **Загрузка файлов:** Лёгкая загрузка PDF, DOCX и Markdown-файлов в сервис RAG для последующей обработки и добавления в векторное хранилище.
+* **Множественные чат-сессии:** Создание и управление несколькими независимыми чатами с возможностью переключения между ними.
+* **История чата (в рамках сессии):** Каждая чат-сессия сохраняет свою историю, которая передаётся в LLM для сохранения контекста.
+* **Интерфейс, как у ChatGPT:** Привычный и интуитивно понятный интерфейс.
+* **Модульная архитектура:** Чёткое разделение кода на модули для удобства поддержки и масштабирования.
 
-## Architecture
+## Архитектура
 
-The application follows a client-server architecture, where the Electron desktop application acts as the client interacting with the FastAPI-based RAG service backend.
+Приложение реализовано по клиент-серверной архитектуре: настольное приложение на Electron выступает в роли клиента, взаимодействующего с сервером RAG на базе FastAPI.
 
 ```
-+---------------------+           +---------------------+
-|                     |           |                     |
-|  RAG Desktop Client |           |  RAG Service (Backend) |
-|   (Electron App)    |           |                     |
-|                     |           |   - FastAPI         |
-|   - Renderer Process| <-------> |   - File Processing |
-|   - Main Process    |           |   - Vector Store    |
-|                     |           |   - LLM Integration |
-+---------------------+           +---------------------+
++---------------------+           +--------------------------+
+|                     |           |                          |
+|  RAG Desktop Client |           |  Сервис RAG (бэкенд)     |
+|   (Electron App)    |           |                          |
+|                     |           |   - FastAPI              |
+|   - Renderer Process| <-------> |   - Обработка файлов     |
+|   - Main Process    |           |   - Векторное хранилище  |
+|                     |           |   - Интеграция с LLM     |
++---------------------+           +--------------------------+
        |
-       | IPC Communication
+       | IPC-связь
        V
 +---------------------+
 |                     |
-|     File System     |
-| (Temporary Storage) |
+|  Файловая система   |
+| (временное хранилище)|
 +---------------------+
 ```
 
-### Electron Processes
+### Процессы Electron
 
--   **Main Process:** The main process is responsible for creating and managing browser windows, handling system events, and performing privileged operations (e.g., file system access, native dialogs). It also acts as an intermediary for secure communication between the renderer process and external resources.
--   **Renderer Process:** Each browser window runs its own renderer process, which is essentially a web page. This is where the user interface (HTML, CSS, JavaScript) resides and user interactions are handled.
+* **Main Process (основной процесс):** Отвечает за создание и управление окнами, системные события, привилегированные операции (доступ к файловой системе, диалоги). Также осуществляет защищённую передачу данных между рендер-процессом и внешними ресурсами.
+* **Renderer Process (рендер-процесс):** Запускается для каждого окна браузера и содержит UI (HTML, CSS, JS). Здесь происходит обработка пользовательских взаимодействий.
 
-### Communication Flow
+### Поток взаимодействия
 
-1.  **Renderer to Main:** User actions (e.g., "Upload File", "Send Message") initiated in the renderer process send IPC (Inter-Process Communication) messages to the main process.
-2.  **Main to Backend:** The main process receives the IPC message, performs any necessary preparatory steps (e.g., reading a file), and then makes HTTP requests to the RAG service backend API.
-3.  **Backend Response to Main:** The RAG service processes the request and sends an HTTP response back to the main process.
-4.  **Main to Renderer:** The main process then forwards the backend's response (or a processed version of it) back to the renderer process via IPC.
-5.  **Renderer Update:** The renderer process updates the UI based on the received data.
+1. **Renderer → Main:** Действия пользователя (например, «Загрузить файл», «Отправить сообщение») отправляют IPC-сообщения в основной процесс.
+2. **Main → Бэкенд:** Основной процесс обрабатывает сообщение (например, читает файл) и отправляет HTTP-запрос к API сервиса RAG.
+3. **Бэкенд → Main:** Сервис обрабатывает запрос и отправляет HTTP-ответ.
+4. **Main → Renderer:** Основной процесс передаёт ответ (или его обработанный вариант) обратно в рендер-процесс через IPC.
+5. **Renderer обновляет UI:** Интерфейс обновляется на основе полученных данных.
 
-## Project Structure
+## Структура проекта
 
 ```
 rag_desktop_client/
-├── main.js                 # Electron Main Process entry point
-├── package.json            # Project dependencies and scripts
+├── main.js                 # Точка входа основного процесса Electron
+├── package.json            # Зависимости и скрипты проекта
 ├── src/
-│   ├── index.html          # Main HTML for the renderer process
-│   ├── renderer.js         # Renderer Process entry point (UI logic)
-│   ├── styles.css          # Application styles
-│   ├── modules/            # UI components and logic
+│   ├── index.html          # Главный HTML-файл для рендер-процесса
+│   ├── renderer.js         # Точка входа рендер-процесса (логика UI)
+│   ├── styles.css          # Стили приложения
+│   ├── modules/            # Компоненты UI и логика
 │   │   ├── chat/
-│   │   │   ├── chat.js     # Chat component logic
-│   │   │   ├── chat.css    # Chat component styles
-│   │   │   └── README.md   # Module README
+│   │   │   ├── chat.js     # Логика компонента чата
+│   │   │   ├── chat.css    # Стили компонента чата
+│   │   │   └── README.md   # README модуля
 │   │   ├── file_upload/
-│   │   │   ├── file_upload.js # File upload logic
-│   │   │   └── README.md   # Module README
+│   │   │   ├── file_upload.js # Логика загрузки файлов
+│   │   │   └── README.md   # README модуля
 │   │   ├── api_client/
-│   │   │   ├── api_client.js # Handles communication with RAG service
-│   │   │   └── README.md   # Module README
+│   │   │   ├── api_client.js # Связь с сервисом RAG
+│   │   │   └── README.md   # README модуля
 │   │   └── chat_manager/
-│   │       ├── chat_manager.js # Manages chat sessions and history
-│   │       └── README.md   # Module README
-├── .env.example            # Example for environment variables (for frontend, e.g., backend URL)
-└── README.md               # This file
+│   │       ├── chat_manager.js # Управление чатами и историей
+│   │       └── README.md   # README модуля
+├── .env.example            # Пример файла переменных окружения (например, URL бэкенда)
+└── README.md               # Этот файл
 ```
 
-## Setup and Installation
+## Установка и настройка
 
-1.  **Clone the repository:**
-    ```bash
-    # git clone <repository_url>
-    # cd rag_desktop_client
-    ```
+1. **Клонируйте репозиторий:**
 
-2.  **Install Node.js dependencies:**
-    ```bash
-    npm install
-    ```
+   ```bash
+   # git clone <repository_url>
+   # cd rag_desktop_client
+   ```
 
-3.  **Configure Backend URL:**
-    Create a `.env` file in the root directory and add the URL of your running RAG service backend:
-    ```
-    RAG_SERVICE_URL="http://127.0.0.1:8000"
-    ```
-    *Ensure your RAG service is running as per its `README.md`.*
+2. **Установите зависимости Node.js:**
 
-## Running the Application
+   ```bash
+   npm install
+   ```
 
-To start the Electron application, run:
+3. **Настройте URL бэкенда:**
+   Создайте файл `.env` в корне проекта и добавьте в него адрес запущенного бэкенда RAG:
+
+   ```
+   RAG_SERVICE_URL="http://127.0.0.1:8000"
+   ```
+
+   *Убедитесь, что сервис RAG запущен, согласно его `README.md`.*
+
+## Запуск приложения
+
+Для запуска приложения Electron выполните:
 
 ```bash
 npm start
 ```
 
-## How to Use
+## Как пользоваться
 
-1.  **Start the RAG Backend Service:** Ensure your RAG service is running on the specified URL (default: `http://127.0.0.1:8000`).
-2.  **Launch the Desktop Client:** Run `npm start` in the `rag_desktop_client` directory.
-3.  **Upload Documents:** Use the "Upload File" functionality to send PDF, DOCX, or Markdown files to the RAG service.
-4.  **Start a New Chat:** Create a new chat session.
-5.  **Query the LLM:** Type your questions in the chat input and send them. The application will use the uploaded documents as context for the LLM.
-6.  **View Responses and Sources:** The LLM's response will be displayed, along with the source document chunks used to generate the answer.
+1. **Запустите сервис RAG:** Убедитесь, что он доступен по указанному в `.env` URL (по умолчанию: `http://127.0.0.1:8000`).
+2. **Запустите настольный клиент:** Выполните `npm start` в каталоге `rag_desktop_client`.
+3. **Загрузите документы:** Используйте кнопку «Upload File» для отправки PDF, DOCX или Markdown-файлов в RAG.
+4. **Создайте новый чат:** Запустите новую чат-сессию.
+5. **Задайте вопрос LLM:** Введите сообщение в чат — загруженные документы будут использованы в качестве контекста.
+6. **Просмотрите ответы и источники:** Ответ LLM будет показан вместе с частями документа, использованными при генерации.
